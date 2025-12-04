@@ -74,3 +74,24 @@ def create_moderator(model_client: OpenAIChatCompletionClient | None = None) -> 
         system_message=system_message,
     )
     return agent
+
+
+
+def create_moderator_consensus(model_client=None):
+    if model_client is None:
+        model_client = create_model_client()
+
+    system_message = (
+        "당신은 Moderator입니다.\n"
+        "- Debater_A와 Debater_B가 제출한 두 개의 초안을 비교하여 핵심 내용을 종합하십시오.\n"
+        "- 두 초안에서 가장 중요한 논지와 장점을 추려 하나의 일관된 답변으로 재구성하십시오.\n"
+        "- 최종 답변은 반드시 '최종 답변:'으로 시작하는 4~6문장 한국어 문단이어야 합니다.\n"
+        "- 중복된 내용은 제거하고 핵심 논지를 명확하게 정리하십시오.\n"
+        "- 최종 답변을 출력한 뒤에는 추가 발언을 하지 마십시오."
+    )
+
+    return AssistantAgent(
+        name="moderator",
+        model_client=model_client,
+        system_message=system_message,
+    )
