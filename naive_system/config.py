@@ -4,8 +4,7 @@ import os
 
 def get_gemini_api_key() -> str:
     api_key = os.getenv("GEMINI_API_KEY")
-    print("[DEBUG] GEMINI_API_KEY in get_gemini_api_key:", repr(api_key))  # 🔥 추가
-
+    
     if not api_key:
         raise ValueError(
             "GEMINI_API_KEY가 환경변수에 설정되어 있지 않습니다. "

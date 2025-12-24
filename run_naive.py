@@ -4,8 +4,7 @@ import os
 # ⭐ 실행 시점에 딱 한 번 .env 로드
 load_dotenv()
 
-# [보안] API 키 로그는 확인 후 주석 처리하세요
-# print("[DEBUG] GEMINI_API_KEY right after load_dotenv:", repr(os.getenv("GEMINI_API_KEY")))
+
 
 from naive_system.pipeline import run_naive_pipeline
 
