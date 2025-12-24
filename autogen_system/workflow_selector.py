@@ -70,8 +70,8 @@ async def run_selector_workflow(question: str | None = None) -> None:
         participants=[debater, verifier, moderator],
         model_client=model_client,
         termination_condition=termination,
-        selector_prompt=SELECTOR_PROMPT,
-        allow_repeated_speaker=False,  # 같은 에이전트가 연속 선택되는 것을 기본적으로 막음
+        selector_prompt=SELECTOR_PROMPT, # selector는 여기서만 제어해주면 됨 (따로 생성할 필요 X)
+        allow_repeated_speaker=False,  # 같은 에이전트가 연속 선택되는 것을 막음
     )
 
     # 사용자 질문 메시지
@@ -87,27 +87,4 @@ async def run_selector_workflow(question: str | None = None) -> None:
     stream = team.run_stream(task=task)
 
     await Console(stream)
-
-
-    # 이벤트를 돌며 실시간 출력 + 히스토리 수집
-    # history = []
-
-    # async for event in stream:
-    #     # AutoGen Console처럼 event 자체를 출력
-    #     print(event)
-
-    #     # event 안에 messages가 있으면 모두 저장
-    #     if hasattr(event, "messages"):
-    #         for msg in event.messages:
-    #             history.append(msg)
-
-    # # === 전체 히스토리 한 번 찍어보기 ===
-    # print("\n\n===== [FULL CONVERSATION HISTORY - SelectorGroupChat] =====")
-    # for i, message in enumerate(history):
-    #     role = getattr(message, "source", "unknown")
-    #     content = getattr(message, "content", "")
-    #     print(f"\n--- Message {i} ({role}) ---")
-    #     print(content)
-
-    # model_client 정리
     await model_client.close()

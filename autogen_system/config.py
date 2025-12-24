@@ -1,5 +1,3 @@
-# autogen_system/config.py
-
 """
 AutoGen용 설정 모듈.
 - OPENAI_API_KEY 로딩

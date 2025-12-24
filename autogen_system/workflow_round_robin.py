@@ -1,6 +1,5 @@
-# autogen_system/workflow.py
 """
-AutoGen 멀티에이전트 워크플로우:
+AutoGen 라운드로빈 워크플로우:
 Debater, Verifier, Moderator를 RoundRobinGroupChat으로 묶어서
 질문 하나에 대해 협력적으로 답변을 만들어내는 흐름을 정의한다.
 """
@@ -20,10 +19,10 @@ MAIN_QUESTION = """
 """
 
 
-async def run_autogen_workflow(question: str | None = None) -> None:
+async def run_round_robin_workflow(question: str | None = None) -> None:
     """
-    AutoGen 기반 멀티에이전트 팀을 구성하고,
-    하나의 질문에 대한 협업 대화를 수행한다.
+    RoundRobin 방식 기반 멀티에이전트 팀을 구성하고,
+    하나의 질문에 대한 협업 대화를 수행
     """
     if question is None:
         question = MAIN_QUESTION.strip()
@@ -35,13 +34,13 @@ async def run_autogen_workflow(question: str | None = None) -> None:
     verifier = create_verifier(model_client)
     moderator = create_moderator(model_client)
 
-    # 대화 종료 조건: '최종 답변:'이 언급되거나, 최대 9개의 메시지가 오가면 종료
+    # 대화 종료 조건: '최종 답변:'이 언급되거나, 9개 이상의 메시지가 오가면 종료
     termination = TextMentionTermination(text="최종 답변:") | MaxMessageTermination(max_messages=10)
 
     # 팀 구성: Debater -> Verifier -> Moderator 순환
     team = RoundRobinGroupChat(
-        participants=[debater, verifier, moderator],
-        termination_condition=termination,
+        participants=[debater, verifier, moderator], # 멤버 정의
+        termination_condition=termination, # 종료 조건
     )
 
     # TextMessage를 사용해 질문 전달
@@ -57,26 +56,4 @@ async def run_autogen_workflow(question: str | None = None) -> None:
     stream = team.run_stream(task=task)
 
     await Console(stream)
-
-    # # 🔥 여기서 직접 이벤트를 돌면서 출력 + 히스토리 수집
-    # history = []
-
-    # async for event in stream:
-    #     # Console 역할 비슷하게 그냥 이벤트 자체를 출력
-    #     print(event)
-
-    #     # event 안에 messages가 있을 때만 기록
-    #     if hasattr(event, "messages"):
-    #         for msg in event.messages:
-    #             history.append(msg)
-
-    # === 여기부터 히스토리 한 번 찍어보는 부분 ===
-    # print("\n\n===== [FULL CONVERSATION HISTORY] =====")
-    # for i, message in enumerate(history):
-    #     role = getattr(message, "source", "unknown")
-    #     content = getattr(message, "content", "")
-    #     print(f"\n--- Message {i} ({role}) ---")
-    #     print(content)
-
-    # model_client 정리
     await model_client.close()

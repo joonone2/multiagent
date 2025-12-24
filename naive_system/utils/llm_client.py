@@ -13,13 +13,12 @@ def call_gemini(prompt: str) -> str:
     try:
         client = genai.Client(api_key=api_key)
 
-        # 최신 google-genai 문법
         response = client.models.generate_content(
             model=get_default_model_name(),
             contents=prompt,
         )
 
-        # 응답 텍스트 추출 (최신 API 기준)
+        # 응답 텍스트 추출 
         return response.text
 
     except Exception as e:

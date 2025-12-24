@@ -1,5 +1,3 @@
-# naive_system/config.py 혹은 utils/config.py 이런 느낌일 거라 가정
-
 import os
 
 def get_gemini_api_key() -> str:
@@ -14,5 +12,5 @@ def get_gemini_api_key() -> str:
 
 
 def get_default_model_name() -> str:
-    """나이브 시스템에서 기본으로 사용할 Gemini 모델 이름."""
+    """나이브 시스템에서 기본으로 사용할 Gemini 모델 설정"""
     return "gemini-2.5-flash"

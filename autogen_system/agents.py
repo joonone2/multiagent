@@ -1,7 +1,5 @@
-# autogen_system/agents.py
-
 """
-AutoGen 에이전트 정의:
+에이전트 정의:
 - Debater: 멀티에이전트의 장점을 설명하는 초안 생성
 - Verifier: 초안을 검증하고 논리/내용 피드백
 - Moderator: 대화 흐름 관리 + 최종 답변 정리 유도
@@ -13,6 +11,7 @@ from autogen_ext.models.openai import OpenAIChatCompletionClient
 from autogen_system.config import create_model_client
 
 
+# debater(초안 작성) 에이전트 생성
 def create_debater(model_client: OpenAIChatCompletionClient | None = None) -> AssistantAgent:
     if model_client is None:
         model_client = create_model_client()
@@ -33,7 +32,7 @@ def create_debater(model_client: OpenAIChatCompletionClient | None = None) -> As
     )
     return agent
 
-
+# verifier (검증가) 에이전트 생성
 def create_verifier(model_client: OpenAIChatCompletionClient | None = None) -> AssistantAgent:
     if model_client is None:
         model_client = create_model_client()
@@ -55,7 +54,7 @@ def create_verifier(model_client: OpenAIChatCompletionClient | None = None) -> A
     )
     return agent
 
-
+# moderator (결정권자) 에이전트 생성
 def create_moderator(model_client: OpenAIChatCompletionClient | None = None) -> AssistantAgent:
     if model_client is None:
         model_client = create_model_client()
@@ -77,21 +76,59 @@ def create_moderator(model_client: OpenAIChatCompletionClient | None = None) -> 
 
 
 
-def create_moderator_consensus(model_client=None):
-    if model_client is None:
-        model_client = create_model_client()
+# Graph Flow 에이전트들 
 
-    system_message = (
-        "당신은 Moderator입니다.\n"
-        "- Debater_A와 Debater_B가 제출한 두 개의 초안을 비교하여 핵심 내용을 종합하십시오.\n"
-        "- 두 초안에서 가장 중요한 논지와 장점을 추려 하나의 일관된 답변으로 재구성하십시오.\n"
-        "- 최종 답변은 반드시 '최종 답변:'으로 시작하는 4~6문장 한국어 문단이어야 합니다.\n"
-        "- 중복된 내용은 제거하고 핵심 논지를 명확하게 정리하십시오.\n"
-        "- 최종 답변을 출력한 뒤에는 추가 발언을 하지 마십시오."
+# 팀 리더, 다른 에이전트들에게 역할 배분 
+def create_manager_start(model_client=None) -> AssistantAgent:
+    if model_client is None: model_client = create_model_client()
+    return AssistantAgent(
+        name="manager_start",
+        model_client=model_client,
+        system_message=(
+            "당신은 팀 리더(manager_start)입니다.\n"
+            "- 사용자의 질문을 1~2문장으로 짧게 요약하세요.\n"
+            "- 그리고 세 명의 전문가(expert_structure, expert_example, expert_limits)에게 역할을 배분해 주세요.\n"
+            "- 각 전문가에게 어떤 관점에서 답해야 할지 간단히 지시하세요.\n"
+            "- 직접 답하지 말고 지시만 내린 뒤 대기하세요."
+        ),
     )
 
+# 구조적 관점 전문가
+def create_expert_structure(model_client=None) -> AssistantAgent:
+    if model_client is None: model_client = create_model_client()
     return AssistantAgent(
-        name="moderator",
+        name="expert_structure",
         model_client=model_client,
-        system_message=system_message,
+        system_message="당신은 '구조/시스템 관점' 전문가입니다. 멀티에이전트의 구조적 장점과 분업 효율성을 3~4문장으로 설명하세요.",
+    )
+
+# 예시 생성 전문가
+def create_expert_example(model_client=None) -> AssistantAgent:
+    if model_client is None: model_client = create_model_client()
+    return AssistantAgent(
+        name="expert_example",
+        model_client=model_client,
+        system_message="당신은 '예시/직관' 전문가입니다. 이해하기 쉬운 실제 사례나 비유를 1~2개 들어 3~5문장으로 설명하세요.",
+    )
+
+# 한계 관점 전문가
+def create_expert_limits(model_client=None) -> AssistantAgent:
+    if model_client is None: model_client = create_model_client()
+    return AssistantAgent(
+        name="expert_limits",
+        model_client=model_client,
+        system_message="당신은 '한계/비교' 전문가입니다. 단일 LLM의 한계점과 멀티에이전트가 이를 어떻게 보완하는지 4~6문장으로 비교하세요.",
+    )
+
+# 최종 통합자
+def create_manager_final(model_client=None) -> AssistantAgent:
+    if model_client is None: model_client = create_model_client()
+    return AssistantAgent(
+        name="manager_final",
+        model_client=model_client,
+        system_message=(
+            "당신은 최종 정리자(manager_final)입니다.\n"
+            "- 앞선 전문가들의 발언을 모두 취합하여 '최종 답변:'으로 시작하는 4~5문장의 결론을 작성하세요.\n"
+            "- 새로운 주장을 하지 말고 요약 및 통합에 집중하세요."
+        ),
     )

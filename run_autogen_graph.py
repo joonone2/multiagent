@@ -1,4 +1,3 @@
-# run_autogen_graph.py
 import asyncio
 from autogen_system.workflow_graph import run_graph_workflow
 
