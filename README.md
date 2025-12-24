@@ -9,7 +9,7 @@
 
 ```bash
 multiagent/
-├── .env                        # API 키 관리 (GEMINI_API_KEY)
+├── .env                        # API 키 관리
 ├── requirements.txt            # 의존성 라이브러리
 ├── README.md                   # 프로젝트 설명서
 │
