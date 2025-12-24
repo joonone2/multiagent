@@ -1,4 +1,6 @@
-# naive_system/agents/drafter.py
+from naive_system.prompts import DRAFTER_SYSTEM_PROMPT
+from naive_system.utils.llm_client import call_gemini
+
 
 """
 Drafter 에이전트:
@@ -6,24 +8,20 @@ Planner가 만든 개요(Plan)를 바탕으로,
 실제 문장으로 구성된 상세 초안(Draft)을 작성하는 역할.
 """
 
-from naive_system.prompts import DRAFTER_SYSTEM_PROMPT
-from naive_system.utils.llm_client import call_gemini
-
-
 def build_drafter_prompt(question: str, plan: str) -> str:
     """
-    Drafter에게 전달할 프롬프트를 구성한다.
+    Drafter에게 전달할 프롬프트를 구성
     - 시스템 역할 설명(DRAFTER_SYSTEM_PROMPT)
     - Planner의 개요(plan)
     """
     full_prompt = f"""{DRAFTER_SYSTEM_PROMPT}
 
-[사용자 질문]
-{question}
+        [사용자 질문]
+        {question}
 
-[Planner의 개요]
-{plan}
-"""
+        [Planner의 개요]
+        {plan}
+        """
     return full_prompt
 
 def run_drafter(question: str, plan: str) -> str:

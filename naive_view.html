@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wide Chat Log</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bubble-user: #3b82f6; 
+            
+            /* 에이전트별 색상 테마 */
+            --planner-bg: #f0f7ff; --planner-text: #004085;
+            --drafter-bg: #f0fff4; --drafter-text: #004d1a;
+            --critic-bg: #fffaf0; --critic-text: #854d00;
+            --editor-bg: #f8f0ff; --editor-text: #4a0072;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #e9ecef; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Pretendard', sans-serif;
+            padding: 40px;
+        }
+
+        /* 가로 폭을 1000px로 넓게 설정 (PPT 슬라이드 비율 고려) */
+        .chat-container {
+            width: 1000px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            padding: 50px; /* 내부 여백도 넉넉하게 */
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f8f9fa;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 24px; /* 제목 크기 확대 */
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 5px;
+        }
+        .header span {
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* 메시지 레이아웃 */
+        .message-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .message-row.user {
+            flex-direction: row-reverse;
+        }
+
+        /* 아바타 크기 확대 */
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .msg-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 85%; /* 말풍선 최대 너비 증가 */
+        }
+
+        .name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #444;
+            margin-left: 4px;
+        }
+        
+        .user .name { display: none; }
+
+        /* 말풍선 스타일 */
+        .bubble {
+            padding: 18px 24px; /* 내부 여백 확대 */
+            border-radius: 20px;
+            font-size: 17px; /* 본문 폰트 확대 (PPT용) */
+            line-height: 1.6;
+            position: relative;
+            white-space: pre-wrap;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        /* 색상 적용 */
+        .user .bubble {
+            background-color: var(--bubble-user);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .planner .avatar { background-color: #2196f3; }
+        .planner .bubble { 
+            background-color: var(--planner-bg); 
+            color: var(--planner-text);
+            border: 1px solid #dbeafe;
+            border-top-left-radius: 4px;
+        }
+
+        .drafter .avatar { background-color: #4caf50; }
+        .drafter .bubble { 
+            background-color: var(--drafter-bg); 
+            color: var(--drafter-text);
+            border: 1px solid #dcfce7;
+            border-top-left-radius: 4px;
+        }
+
+        .critic .avatar { background-color: #ff9800; }
+        .critic .bubble { 
+            background-color: var(--critic-bg); 
+            color: var(--critic-text);
+            border: 1px solid #ffedd5;
+            border-top-left-radius: 4px;
+        }
+
+        .editor .avatar { background-color: #9c27b0; }
+        .editor .bubble { 
+            background-color: var(--editor-bg); 
+            color: var(--editor-text); 
+            font-weight: 600;
+            border: 1px solid #f3e8ff;
+            border-top-left-radius: 4px;
+            font-size: 18px; /* 결과는 조금 더 크게 */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        
+        <div class="header">
+            <h1>Multi-Agent Collaboration Log</h1>
+            <span>Scenario: Complex Problem Solving</span>
+        </div>
+
+        <div class="message-row user">
+            <div class="bubble">다음 질문에 대해 설명해 주세요:
+‘왜 멀티에이전트 시스템이 단일 LLM보다 복잡한 문제 해결에 더 적합할 수 있는가?’</div>
+        </div>
+
+        <div class="message-row planner">
+            <div class="avatar"><i class="fas fa-map"></i></div>
+            <div class="msg-content">
+                <span class="name">Planner</span>
+                <div class="bubble">1. 분업 및 전문화
+2. 상호작용 및 협업 시너지</div>
+            </div>
+        </div>
+
+        <div class="message-row drafter">
+            <div class="avatar"><i class="fas fa-pen"></i></div>
+            <div class="msg-content">
+                <span class="name">Drafter</span>
+                <div class="bubble">멀티에이전트 시스템은 분업과 전문화를 통해 각 LLM이 특정 역할을 수행하게 합니다.
+이는 상호작용과 협업 시너지를 창출하여 단일 LLM보다 복잡한 문제를 효과적으로 해결합니다.</div>
+            </div>
+        </div>
+
+        <div class="message-row critic">
+            <div class="avatar"><i class="fas fa-search"></i></div>
+            <div class="msg-content">
+                <span class="name">Critic</span>
+                <div class="bubble">초안은 멀티에이전트 시스템의 기능적 이점을 언급하지만, 그 이점이 '복잡한 문제 해결'에 왜 더 적합한지에 대한 핵심적인 '왜'가 설명되지 않습니다.
+단순히 '효과적으로 해결한다'는 결과를 명시할 뿐, 그 기저의 원리를 다루지 못했습니다.</div>
+            </div>
+        </div>
+
+        <div class="message-row editor">
+            <div class="avatar"><i class="fas fa-check-double"></i></div>
+            <div class="msg-content">
+                <span class="name">Editor (Final Answer)</span>
+                <div class="bubble">멀티에이전트 시스템은 복잡한 문제를 분해하고 전문화된 LLM들이 협력하여 단일 LLM으로는 다루기 어려운 문제의 다층적 복잡성을 효과적으로 해결하기 때문이다.</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
