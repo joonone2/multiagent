@@ -29,11 +29,11 @@ multiagent/
 │   ├── workflow_selector.py    # [동적] Selector 로직
 │   └── workflow_graph.py       # [구조] GraphFlow 로직
 │
-└── # 실행 파일 (Entry Points)
-    ├── run_naive.py            # Naive 방식 실행
-    ├── run_autogen_round_robin.py
-    ├── run_autogen_selector.py
-    └── run_autogen_graph.py
+ # 실행 파일 (Entry Points)
+├── run_naive.py            # Naive 방식 실행
+├── run_autogen_round_robin.py
+├── run_autogen_selector.py
+└── run_autogen_graph.py
 
 ```
 
