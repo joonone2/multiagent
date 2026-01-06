@@ -3,7 +3,8 @@
 
 # Multi-Agent System Study: Naive vs AutoGen
 
-기초적인 **Naive(수동 제어)** 방식부터, Microsoft의 **AutoGen 프레임워크**를 활용한 워크플로우까지 단계별로 구현했습니다. 
+**Naive(수동 제어)** 방식, 
+Microsoft의 **AutoGen 프레임워크**를 활용한 워크플로우 구현
 
 ## 📂 프로젝트 구조
 
